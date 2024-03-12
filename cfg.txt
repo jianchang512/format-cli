@@ -1,0 +1,3 @@
+source_ext=mp3, flac, aac, mp4, mov, mkv, mpeg, avi, m4a
+target_ext=wav
+dir=C:/Users/c1/Videos
