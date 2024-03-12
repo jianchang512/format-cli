@@ -1,6 +1,7 @@
 # 一个极简的音视频格式转换工具
 
-![image](https://github.com/jianchang512/format-cli/assets/3378335/77d3c00e-b397-4290-a274-278277841de2)
+
+![01](https://github.com/jianchang512/format-cli/assets/3378335/8832a5a0-8395-457f-aa8e-cd08edcf4a2e)
 
 
 使用 python 和 ffmpeg.exe ,实现音频视频格式之间的转换。
