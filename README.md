@@ -1,5 +1,8 @@
 # 一个极简的音视频格式转换工具
 
+![image](https://github.com/jianchang512/format-cli/assets/3378335/77d3c00e-b397-4290-a274-278277841de2)
+
+
 使用 python 和 ffmpeg.exe ,实现音频视频格式之间的转换。
 
 执行 `python geshi.py`或双击 `geshi.exe`,然后根据提示输入 `旧格式->新格式`，回车，即可将当前目录下所有旧格式文件转为新格式
@@ -11,6 +14,8 @@
 通过 `target_ext=` 指定要转换到的格式，默认将上面指定的格式转换到 wav
 
 通过 `dir=` 指定要进行转换处理的目录，默认是当前目录
+
+
 
 
 ```
