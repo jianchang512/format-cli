@@ -1,14 +1,67 @@
-            - name: PyInstaller Windows
-  # You may pin to the exact commit or the version.
-  # uses: JackMcKew/pyinstaller-action-windows@a8dee21ad01bbc7e7363d445bb632691b95ba057
-  uses: JackMcKew/pyinstaller-action-windows@v0.1.2
-  with:
-    # Directory containing source code (optional requirements.txt).
-    path: . # default is src
-    # Specify a custom URL for PYPI
-    pypi_url: # optional, default is https://pypi.python.org/
-    # Specify a custom URL for PYPI Index
-    pypi_index_url: # optional, default is https://pypi.python.org/simple
-    # Specify a file path for .spec file
-    spec: geshi.spec # optional, default is 
-          
+---
+name: Build using PyInstaller
+on:
+  workflow_call:
+    inputs:
+      app-script-path:
+        required: true
+        type: string
+        description: Path to a Python script
+      pyinstaller-options:
+        required: false
+        type: string
+        description: Additional options for PyInstaller
+        default: --clean --noconsole --onefile
+      runs-on:
+        required: false
+        type: string
+        description: Type of machine to run the job on
+        default: windows-latest
+      python-version:
+        required: false
+        type: string
+        description: Python version to use
+        default: 3.x
+      retention-days:
+        required: false
+        type: number
+        description: Number of days to retain artifacts
+        default: 1
+      artifact-name:
+        required: false
+        type: string
+        description: Name of the artifact
+        default: dist
+      artifact-path:
+        required: false
+        type: string
+        description: Path to the artifact
+        default: dist
+defaults:
+  run:
+    shell: bash -euo pipefail {0}
+    working-directory: .
+jobs:
+  bundle:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Install PyInstaller
+        run: |
+          python -m pip install -U --no-cache-dir pip PyInstaller
+      - name: Install Python packages
+        if: inputs.python-packages-to-install != null
+        run: |
+          python -m pip install -U --no-cache-dir ${{ inputs.python-packages-to-install }}
+      - name: Build an executable file
+        run: |
+          python -m PyInstaller ${{ inputs.pyinstaller-options }} ${{ inputs.app-script-path }}
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.artifact-path }}
