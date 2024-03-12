@@ -1,67 +1,30 @@
----
-name: Build using PyInstaller
-on:
-  workflow_call:
-    inputs:
-      app-script-path:
-        required: true
-        type: string
-        description: Path to a Python script
-      pyinstaller-options:
-        required: false
-        type: string
-        description: Additional options for PyInstaller
-        default: --clean --noconsole --onefile
-      runs-on:
-        required: false
-        type: string
-        description: Type of machine to run the job on
-        default: windows-latest
-      python-version:
-        required: false
-        type: string
-        description: Python version to use
-        default: 3.x
-      retention-days:
-        required: false
-        type: number
-        description: Number of days to retain artifacts
-        default: 1
-      artifact-name:
-        required: false
-        type: string
-        description: Name of the artifact
-        default: dist
-      artifact-path:
-        required: false
-        type: string
-        description: Path to the artifact
-        default: dist
-defaults:
-  run:
-    shell: bash -euo pipefail {0}
-    working-directory: .
+name: Build with PyInstaller
+
+on: [push]
+
 jobs:
-  bundle:
-    runs-on: ${{ inputs.runs-on }}
+  build:
+
+    runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ inputs.python-version }}
-      - name: Install PyInstaller
-        run: |
-          python -m pip install -U --no-cache-dir pip PyInstaller
-      - name: Install Python packages
-        if: inputs.python-packages-to-install != null
-        run: |
-          python -m pip install -U --no-cache-dir ${{ inputs.python-packages-to-install }}
-      - name: Build an executable file
-        run: |
-          python -m PyInstaller ${{ inputs.pyinstaller-options }} ${{ inputs.app-script-path }}
-      - name: Upload the artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ inputs.artifact-name }}
-          path: ${{ inputs.artifact-path }}
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9 # or any specific Python version you require
+
+    - name: Install PyInstaller
+      run: pip install pyinstaller
+
+    - name: Build the executable with PyInstaller
+      run: pyinstaller --onefile geshi.py
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: geshi-windows-executable
+        path: dist/geshi.exe
